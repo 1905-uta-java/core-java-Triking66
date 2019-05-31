@@ -1,6 +1,9 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +18,13 @@ public class EvaluationService {
 	 */
 	public String reverse(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		String new_str = "";
+		int index = string.length()-1;
+		while(index >= 0) {
+			new_str += string.charAt(index);
+			index -= 1;
+		}
+		return new_str;
 	}
 
 	/**
@@ -28,7 +37,14 @@ public class EvaluationService {
 	 */
 	public String acronym(String phrase) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		String[] words = phrase.split("[ ,-]+");
+		String acro = "";
+		int index = 0;
+		while(index < words.length) {
+			acro += words[index].toUpperCase().charAt(0);
+			index += 1;
+		}
+		return acro;
 	}
 
 	/**
@@ -82,16 +98,25 @@ public class EvaluationService {
 
 		public boolean isEquilateral() {
 			// TODO Write an implementation for this method declaration
+			if(this.sideOne == this.sideTwo && this.sideTwo == this.sideThree) {
+				return true;
+			}
 			return false;
 		}
 
 		public boolean isIsosceles() {
 			// TODO Write an implementation for this method declaration
+			if(this.sideOne == this.sideTwo || this.sideOne == this.sideThree || this.sideTwo == this.sideThree) {
+				return true;
+			}
 			return false;
 		}
 
 		public boolean isScalene() {
 			// TODO Write an implementation for this method declaration
+			if(this.sideOne != this.sideTwo && this.sideOne != this.sideThree && this.sideTwo != this.sideThree) {
+				return true;
+			}
 			return false;
 		}
 
@@ -114,7 +139,55 @@ public class EvaluationService {
 	 */
 	public int getScrabbleScore(String string) {
 		// TODO Write an implementation for this method declaration
-		return 0;
+		int total = 0;
+		string = string.toLowerCase();
+		int index = 0;
+		while(index < string.length()) {
+			switch(string.charAt(index)){
+			case 'a':
+			case 'e':
+			case 'i':
+			case 'o':
+			case 'u':
+			case 'l':
+			case 'n':
+			case 'r':
+			case 's':
+			case 't':
+				total += 1;
+				break;
+			case 'd':
+			case 'g':
+				total += 2;
+				break;
+			case 'b':
+			case 'c':
+			case 'm':
+			case 'p':
+				total += 3;
+				break;
+			case 'f':
+			case 'h':
+			case 'v':
+			case 'w':
+			case 'y':
+				total += 4;
+				break;
+			case 'k':
+				total += 5;
+				break;
+			case 'j':
+			case 'x':
+				total += 8;
+				break;
+			case 'q':
+			case 'z':
+				total += 10;
+				break;
+			}
+			index += 1;
+		}
+		return total;
 	}
 
 	/**
@@ -150,7 +223,12 @@ public class EvaluationService {
 	 */
 	public String cleanPhoneNumber(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		String new_str = string.replaceAll("[^0-9]", "");
+		if(new_str.length() > 11)
+			throw new IllegalArgumentException();
+		if(new_str.length() < 10)
+			throw new IllegalArgumentException();
+		return new_str;
 	}
 
 	/**
@@ -164,7 +242,21 @@ public class EvaluationService {
 	 */
 	public Map<String, Integer> wordCount(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		Map<String, Integer> word_count = new HashMap<>();
+		String[] words = string.split("[ ,\n]+");
+		int index = 0;
+		while(index < words.length) {
+			if(word_count.containsKey(words[index])) {
+				int n = word_count.get(words[index]);
+				n += 1;
+				word_count.put(words[index], n);
+			}
+			else {
+				word_count.put(words[index], 1);
+			}
+			index += 1;
+		}
+		return word_count;
 	}
 
 	/**
@@ -202,12 +294,31 @@ public class EvaluationService {
 	 * binary search is a dichotomic divide and conquer search algorithm.
 	 * 
 	 */
-	static class BinarySearch<T> {
+	static class BinarySearch<T extends Comparable<T>> {
 		private List<T> sortedList;
 
 		public int indexOf(T t) {
 			// TODO Write an implementation for this method declaration
-			return 0;
+			int lower_check = 0;
+			int upper_check = this.sortedList.size()-1;
+			int index = (upper_check-lower_check)/2 + lower_check;
+			boolean found = false;
+			while(!found && lower_check < upper_check) {
+				if(sortedList.get(index).compareTo(t) == 0) {
+					return index;
+				}
+				if(sortedList.get(index).compareTo(t) < 0) {
+					lower_check=index+1;
+				}
+				else {
+					upper_check=index-1;
+				}
+				index = (upper_check-lower_check)/2 + lower_check;
+			}
+			if(sortedList.get(lower_check).compareTo(t) == 0) {
+				return lower_check;
+			}
+			return -1;
 		}
 
 		public BinarySearch(List<T> sortedList) {
@@ -243,6 +354,19 @@ public class EvaluationService {
 	 */
 	public boolean isArmstrongNumber(int input) {
 		// TODO Write an implementation for this method declaration
+		List<Integer> digits = new ArrayList<>();
+		int temp = input;
+		while(temp > 0) {
+			digits.add(temp%10);
+			temp = temp/10;
+		}
+		temp = 0;
+		for(Integer i : digits) {
+			temp += Math.pow(i, digits.size());
+		}
+		if(temp == input) {
+			return true;
+		}
 		return false;
 	}
 
@@ -261,6 +385,16 @@ public class EvaluationService {
 	 */
 	public boolean isPangram(String string) {
 		// TODO Write an implementation for this method declaration
+		HashSet<String> letters = new HashSet<>();
+		String only_letters = string.toLowerCase().replaceAll("[^a-z]", "");
+		int index = 0;
+		while(index < only_letters.length()) {
+			letters.add(""+only_letters.charAt(index));
+			index += 1;
+		}
+		if(letters.size() == 26) {
+			return true;
+		}
 		return false;
 	}
 
@@ -301,7 +435,30 @@ public class EvaluationService {
 
 		public String rotate(String string) {
 			// TODO Write an implementation for this method declaration
-			return null;
+			String new_str = "";
+			String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			String lower = "abcdefghijklmnopqrstuvwxyz";
+			int index = 0;
+			while(index < string.length()) {
+				if(Character.isUpperCase(string.charAt(index))) {
+					int prev = upper.indexOf(string.charAt(index));
+					prev = (prev + this.key)%26;
+					char next = upper.charAt(prev);
+					new_str += next;
+				}
+				else 
+				if(Character.isLowerCase(string.charAt(index))) {
+					int prev = lower.indexOf(string.charAt(index));
+					prev = (prev + this.key)%26;
+					char next = lower.charAt(prev);
+					new_str += next;
+				}
+				else {
+					new_str += string.charAt(index);
+				}
+				index += 1;
+			}
+			return new_str;
 		}
 
 	}
@@ -341,7 +498,27 @@ public class EvaluationService {
 		 */
 		public static String encode(String string) {
 			// TODO Write an implementation for this method declaration
-			return null;
+			string = string.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+			String forward = "abcdefghijklmnopqrstuvwxyz";
+			String backward = "zyxwvutsrqponmlkjihgfedcba";
+			int index = 0;
+			String new_str = "";
+			while(index < string.length()) {
+				if(index%5 == 0 && index != 0) {
+					new_str += " ";
+				}
+				if(Character.isLowerCase(string.charAt(index))) {
+					int prev = forward.indexOf(string.charAt(index));
+					char next = backward.charAt(prev);
+					new_str += next;
+				}
+				else {
+					new_str += string.charAt(index);
+				}
+				
+				index += 1;
+			}
+			return new_str;
 		}
 
 		/**
@@ -352,7 +529,23 @@ public class EvaluationService {
 		 */
 		public static String decode(String string) {
 			// TODO Write an implementation for this method declaration
-			return null;
+			string = string.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+			String forward = "abcdefghijklmnopqrstuvwxyz";
+			String backward = "zyxwvutsrqponmlkjihgfedcba";
+			int index = 0;
+			String new_str = "";
+			while(index < string.length()) {
+				if(Character.isLowerCase(string.charAt(index))) {
+					int prev = backward.indexOf(string.charAt(index));
+					char next = forward.charAt(prev);
+					new_str += next;
+				}
+				else {
+					new_str += string.charAt(index);
+				}
+				index += 1;
+			}
+			return new_str;
 		}
 	}
 

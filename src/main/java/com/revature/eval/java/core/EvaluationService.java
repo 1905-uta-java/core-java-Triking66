@@ -1,5 +1,8 @@
 package com.revature.eval.java.core;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -573,6 +576,29 @@ public class EvaluationService {
 	 */
 	public boolean isValidIsbn(String string) {
 		// TODO Write an implementation for this method declaration
+		string = string.replaceAll("[^0-9X]", "");
+		if(string.length() != 10) {
+			return false;
+		}
+		int total = 0;
+		int index = 0;
+		while(index < 9) {
+			int n = Integer.parseInt(""+string.charAt(index));
+			total += (n * (10-index))%11;
+			total = total%11;
+			index += 1;
+		}
+		if(string.charAt(9) == 'X') {
+			total += 10;
+			total = total%11;
+		}
+		else {
+			total += Integer.parseInt(""+string.charAt(index));
+			total = total%11;
+		}
+		if(total == 0) {
+			return true;
+		}
 		return false;
 	}
 
@@ -587,7 +613,33 @@ public class EvaluationService {
 	 */
 	public Temporal getGigasecondDate(Temporal given) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		int year = 1;
+		int month = 1;
+		int day = 1;
+		int hour = 0;
+		int minute = 0;
+		int second = 0;
+		if(given.isSupported(ChronoUnit.YEARS)) {
+			year = given.get(ChronoField.YEAR);
+		}
+		if(given.isSupported(ChronoField.MONTH_OF_YEAR)) {
+			month = given.get(ChronoField.MONTH_OF_YEAR);
+		}
+		if(given.isSupported(ChronoField.DAY_OF_MONTH)) {
+			day = given.get(ChronoField.DAY_OF_MONTH);
+		}
+		if(given.isSupported(ChronoField.HOUR_OF_DAY)) {
+			hour = given.get(ChronoField.HOUR_OF_DAY);
+		}
+		if(given.isSupported(ChronoField.MINUTE_OF_HOUR)) {
+			minute = given.get(ChronoField.MINUTE_OF_HOUR);
+		}
+		if(given.isSupported(ChronoField.SECOND_OF_MINUTE)) {
+			second = given.get(ChronoField.SECOND_OF_MINUTE);
+		}
+		Temporal ret = LocalDateTime.of(year, month, day, hour, minute, second);
+		ret = ret.plus(1000000000, ChronoUnit.SECONDS);
+		return ret;
 	}
 
 	
@@ -620,7 +672,37 @@ public class EvaluationService {
 	 */
 	public int solveWordProblem(String string) {
 		// TODO Write an implementation for this method declaration
-		return 0;
+		String[] vals = string.split(" ");
+		int num_one;
+		int num_two;
+		int result = 0;
+		switch(vals[3]) {
+		case "plus":
+			vals[4] = vals[4].replaceAll("[?]", "");
+			num_one = Integer.parseInt(vals[2]);
+			num_two = Integer.parseInt(vals[4]);
+			result = num_one + num_two;
+			break;
+		case "minus":
+			vals[4] = vals[4].replaceAll("[?]", "");
+			num_one = Integer.parseInt(vals[2]);
+			num_two = Integer.parseInt(vals[4]);
+			result = num_one - num_two;
+			break;
+		case "divided":
+			vals[5] = vals[5].replaceAll("[?]", "");
+			num_one = Integer.parseInt(vals[2]);
+			num_two = Integer.parseInt(vals[5]);
+			result = num_one / num_two;
+			break;
+		case "multiplied":
+			vals[5] = vals[5].replaceAll("[?]", "");
+			num_one = Integer.parseInt(vals[2]);
+			num_two = Integer.parseInt(vals[5]);
+			result = num_one * num_two;
+			break;
+		}
+		return result;
 	}
 
 }
